@@ -25,7 +25,7 @@
 
 <div align="center">
 
-![AI Playing PVZ Demo](assets/demo.gif)
+![AI Playing PVZ Demo](https://raw.githubusercontent.com/AlanRuskin6/TransformerPVZ/master/assets/demo.gif)
 
 *AI 正在自动进行生存模式的策略规划与植物摆放*
 
