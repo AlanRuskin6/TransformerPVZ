@@ -1,0 +1,155 @@
+"""
+Utilities Module
+Provides utility functions for position, timing, damage, effects, garg handling, and spawn prediction.
+"""
+
+from utils.logger import Logger, get_logger
+
+# Position and coordinate utilities
+from utils.position import (
+    col_to_x,
+    x_to_col,
+    x_to_col_float,
+    row_to_y,
+    y_to_row,
+    y_to_row_float,
+    grid_to_pixel,
+    pixel_to_grid,
+    pixel_to_grid_float,
+    distance_2d,
+    distance_x,
+    distance_grid,
+    manhattan_distance,
+    get_roof_height_offset,
+    get_roof_adjusted_y,
+    is_on_roof,
+    is_valid_grid_position,
+    clamp_to_lawn,
+    get_plant_position,
+    get_cob_target_position,
+)
+
+# Timing calculation utilities
+from utils.timing import (
+    get_cob_fly_time,
+    get_roof_cob_fly_times,
+    get_instant_plant_delay,
+    get_potato_mine_arm_time,
+    calculate_instant_plant_effect_time,
+    get_ice_effect_delay,
+    get_ice_duration,
+    get_slow_duration,
+    calculate_ice_effect_timing,
+    get_ice_status_at_time,
+    calculate_travel_time,
+    calculate_time_to_target_x,
+    calculate_time_to_column,
+    calculate_travel_time_with_effects,
+    get_cob_cooldown,
+    calculate_next_cob_ready_time,
+    calculate_cob_availability,
+    calculate_cob_intercept_timing,
+    calculate_instant_plant_intercept_timing,
+)
+
+# Damage calculation utilities
+from utils.damage import (
+    get_weapon_damage,
+    get_instant_damage_to_zombie,
+    calculate_cob_damage,
+    calculate_cherry_damage,
+    calculate_doom_damage,
+    calculate_jalapeno_damage,
+    get_damage_to_kill,
+    cobs_needed_to_kill,
+    can_instant_kill,
+    get_remaining_hp_after_hit,
+    calculate_dps,
+    get_peashooter_dps,
+    get_repeater_dps,
+    get_gatling_dps,
+    get_gloom_dps,
+    get_melon_dps,
+    calculate_time_to_kill,
+    calculate_gloom_time_to_kill,
+    calculate_overkill,
+    calculate_damage_efficiency,
+    evaluate_cob_efficiency,
+    compare_weapon_efficiency,
+    get_garg_damage_reduction,
+    calculate_garg_instant_damage,
+    cobs_to_kill_garg,
+)
+
+# Status effect utilities
+from utils.effects import (
+    EffectType,
+    StatusEffect,
+    get_freeze_duration,
+    calculate_freeze_remaining,
+    is_frozen,
+    get_freeze_end_time,
+    get_slow_duration as get_slow_effect_duration,
+    get_slow_speed_multiplier,
+    calculate_slow_remaining,
+    is_slowed,
+    get_slow_end_time,
+    get_butter_duration,
+    calculate_butter_remaining,
+    is_buttered,
+    get_effective_speed,
+    get_current_status,
+    get_status_summary,
+    calculate_effect_timeline,
+    calculate_travel_with_effects,
+    calculate_ice_chain_effect,
+    can_refreeze,
+)
+
+# Gargantuar handling utilities
+from utils.garg import (
+    is_hammer_coming,
+    get_hammer_circulation_rate,
+    calculate_time_to_hammer,
+    is_giga_hammer_attack,
+    get_hammer_range,
+    is_in_hammer_range,
+    get_hammer_danger_zone,
+    will_plant_be_hammered,
+    get_throw_imp_hp_threshold,
+    will_throw_imp,
+    get_imp_throw_timings,
+    calculate_damage_to_trigger_imp,
+    get_garg_damage_reduction as get_garg_reduction,
+    calculate_garg_instant_damage as calc_garg_instant_damage,
+    cobs_to_kill_garg as garg_cobs_needed,
+    cobs_to_kill_giga,
+    calculate_remaining_hp_after_cobs,
+    get_garg_average_speed,
+    predict_garg_position,
+    estimate_garg_arrival_time,
+    analyze_garg_threat,
+    get_optimal_cob_count_for_gargs,
+)
+
+# Spawn prediction utilities
+from utils.spawn import (
+    WaveType,
+    parse_zombie_type_list,
+    get_dangerous_types_in_level,
+    has_gargantuar_in_level,
+    has_giga_in_level,
+    is_huge_wave,
+    get_wave_type,
+    get_next_huge_wave,
+    waves_until_huge,
+    parse_wave_spawn_list,
+    predict_next_wave_zombies,
+    count_zombie_types_in_wave,
+    get_garg_count_in_wave,
+    predict_wave_refresh_time,
+    get_wave_timing_info,
+    analyze_level_difficulty,
+    get_priority_targets_for_wave,
+    recommend_cob_count_for_wave,
+)

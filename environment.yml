@@ -1,0 +1,21 @@
+name: pvz_ai
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - pytorch
+  - torchvision
+  - torchaudio
+  - pytorch-cuda=11.8 # 根据你的显卡驱动调整
+  - numpy
+  - pyyaml
+  - psutil
+  - tqdm
+  - colorama
+  - pip:
+      - gymnasium
+      - stable-baselines3
+      - sb3-contrib

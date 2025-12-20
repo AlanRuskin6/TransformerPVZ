@@ -1,0 +1,217 @@
+# PVZ AI 训练配置
+# Survival Day (Normal) - 生存白天普通，只有5波
+
+# =============================================================================
+# 游戏设置
+# =============================================================================
+game:
+  mode: "survival_pool_endless" # 游戏模式: 生存模式(泳池无尽)
+  game_mode_id: 13              # mode 13 = 生存泳池无尽
+  background_type: 2            # BACKGROUND_3_POOL
+  map: "pool"                   # 地图类型: 泳池 (6行)
+  rows: 6                       # 行数 (泳池6行)
+  cols: 9                       # 列数
+  initial_sun: 50               # 初始阳光
+  # 游戏可执行文件路径 (用于自动重启，如果游戏崩溃)
+  exe_path: "C:/Users/joyto/Desktop/Pvz/TranfsormerPVZ/gameobj/PlantsVsZombies.exe"
+
+# =============================================================================
+# 卡槽配置 (10张卡)
+# =============================================================================
+cards:
+  slot_count: 10                # 卡槽数量
+  
+  plants:
+    # 泳池最优卡组 - 经过测试的配置
+    
+    # 卡槽0: 向日葵 (经济基础)
+    - slot: 0
+      id: 1
+      name: "Sunflower"
+      cost: 50
+      
+    # 卡槽1: 豌豆射手 (首波输出)
+    - slot: 1
+      id: 0
+      name: "Peashooter"
+      cost: 100
+      
+    # 卡槽2: 双发射手 (主力输出)
+    - slot: 2
+      id: 7
+      name: "Repeater"
+      cost: 200
+      
+    # 卡槽3: 睡莲 (水域必备)
+    - slot: 3
+      id: 16
+      name: "Lily Pad"
+      cost: 25
+      is_aquatic: true
+      
+    # 卡槽4: 坚果墙 (防御)
+    - slot: 4
+      id: 3
+      name: "Wall-nut"
+      cost: 50
+      
+    # 卡槽5: 窝瓜 (应急)
+    - slot: 5
+      id: 17
+      name: "Squash"
+      cost: 50
+      is_instant: true
+      
+    # 卡槽6: 樱桃炸弹 (清场)
+    - slot: 6
+      id: 2
+      name: "Cherry Bomb"
+      cost: 150
+      is_instant: true
+      
+    # 卡槽7: 香蒲 (水域输出)
+    - slot: 7
+      id: 43
+      name: "Cattail"
+      cost: 225
+      is_aquatic: true
+      
+    # 卡槽8: 三线射手 (多行覆盖)
+    - slot: 8
+      id: 18
+      name: "Threepeater"
+      cost: 325
+      
+    # 卡槽9: 西瓜投手 (后期AOE)
+    - slot: 9
+      id: 39
+      name: "Melon-pult"
+      cost: 300
+
+# =============================================================================
+# 动作空间
+# =============================================================================
+action_space:
+  type: "discrete"
+  # 10张卡 × 54格 (6行×9列) + 铲子×54格 + 等待
+  # = 540 + 54 + 1 = 595 动作
+  size: 595
+  
+  structure:
+    plant_actions: 540          # 种植动作 (10卡 × 54格)
+    shovel_actions: 54          # 铲除动作 (54格)
+    wait_action: 1              # 等待动作
+
+# =============================================================================
+# 观测空间 (增强版 - 利用完整内存数据)
+# =============================================================================
+observation_space:
+  # 网格特征 (CNN输入) - 13通道完整版
+  grid:
+    shape: [6, 9, 13]           # 6行 × 9列 × 13通道
+    channels:
+      - "plant_type"            # 通道0: 植物类型ID (归一化)
+      - "plant_hp"              # 通道1: 植物血量比例
+      - "plant_function"        # 通道2: 植物功能分类 (0=防御/0.3=经济/0.6=控制/1.0=攻击)
+      - "zombie_density"        # 通道3: 僵尸数量密度
+      - "zombie_hp"             # 通道4: 僵尸血量总和 (含护甲)
+      - "zombie_threat"         # 通道5: 僵尸威胁度 (类型系数)
+      - "zombie_urgency"        # 通道6: 僵尸紧迫度 (基于速度和距离的Time to Impact)
+      - "zombie_status"         # 通道7: 僵尸状态 (冰冻0.5/减速0.3/啃食0.8/魅惑-1.0)
+      - "bullet_density"        # 通道8: 子弹密度
+      - "bullet_threat"         # 通道9: 子弹威胁 (伤害+特效)
+      - "dps_heatmap"           # 通道10: DPS热力图 (火力覆盖)
+      - "threat_heatmap"        # 通道11: 威胁热力图 (僵尸威胁扩散)
+      - "kill_heatmap"          # 通道12: 击杀热力图 (历史击杀位置)
+  
+  # 全局特征 (MLP输入) - 扩展到50+维
+  global:
+    features:
+      - "sun"                   # 当前阳光 (1)
+      - "sun_producing"         # 场上向日葵数量 (1) 
+      - "wave"                  # 当前波数 (1)
+      - "total_waves"           # 总波数 (1)
+      - "wave_countdown"        # 下一波倒计时 (1)
+      - "game_clock"            # 游戏时钟 (1)
+      - "zombie_count"          # 僵尸总数 (1)
+      - "zombie_total_hp"       # 僵尸总血量 (1)
+      - "plant_count"           # 植物总数 (1)
+      - "lawnmower_status"      # 小推车状态 (6) - 每行一个 (泳池6行)
+      - "cards_cd_ratio"        # 10张卡的CD比例 (10) - 0~1连续值
+      - "cards_affordable"      # 10张卡是否买得起 (10)
+      - "row_threat"            # 每行威胁度 (6) - 僵尸血量加权 (泳池6行)
+      - "row_defense"           # 每行防御力 (6) - 植物数量和类型 (泳池6行)
+      - "huge_wave_countdown"   # 大波倒计时 (1)
+      - "zombie_refresh_hp"     # 出怪血量阈值 (1)
+      - "ice_trails"            # 冰道状态 (6) - 每行是否有冰道
+      - "next_wave_preview"     # 下一波出怪预告 (10) - 各类型僵尸数量归一化
+    total_dim: 75               # 9 + 6 + 10 + 10 + 6 + 6 + 1 + 1 + 6 + 10 + 10(预留)
+
+  # 卡片属性特征 (Embedding输入) - 新增
+  # 形状: [10, 7] (10张卡，每张卡7个属性)
+  # 属性: [Cost, HP, Damage, Range, Cooldown, Role, ProjectileType]
+  card_attributes:
+    shape: [10, 7]
+
+# =============================================================================
+# 奖励配置 (归一化版 - 所有奖励在 -3 ~ +3 范围内)
+# =============================================================================
+rewards:
+  # 正向奖励 - 清晰的信号 (缩小100倍)
+  zombie_kill:
+    normal: 3.0                 # 击杀僵尸 (杀戮才是王道)
+    conehead: 3.5
+    buckethead: 4.0
+
+  sun_collect: 0.02             # 收集阳光 (提升，保证经济)
+  wave_complete: 50.0           # 完成一波 (大幅提升)
+  game_win: 100.0               # 通关
+  streak_bonus: 20.0            # 连胜奖励 (大幅提升，鼓励连续胜利)
+  survival_per_step: 0.0        # 存活奖励 (移除，防止苟活)
+
+  # 种植奖励 (核心！鼓励AI主动种植)
+  plant_sunflower: 0.0          # 种向日葵 (2000阳光开局不需要向日葵，禁止分心)
+  plant_attacker: 5.0           # 种攻击植物 (巨额提升，种下就是赚到)
+  plant_wall: 0.1               # 种坚果墙 (降低，不要只防守)
+
+  # 负向惩罚 - 小推车是关键！
+  plant_lost: -0.5              # 植物被吃 (适当提高惩罚，避免随意牺牲)
+  sunflower_lost: -1.0          # 向日葵被吃 (提高惩罚，保护经济)
+  lawnmower_triggered: -10.0    # 小推车触发 (适当惩罚)
+  game_lose: -50.0              # 游戏失败 (极大惩罚，让AI明白"死"比"丢植物"更可怕)
+  invalid_action: -0.005        # 无效操作 (降低惩罚，避免因系统误差导致AI不敢动)
+
+  potential:
+    sun_scale: 0.15
+    sun_cap: 400.0
+    plant_scale: 0.8
+    spread_bonus: 0.12
+    lawnmower_scale: 5.0        # 提高小推车在势能中的权重
+    zombie_threat_scale: 0.8
+    zombie_distance_bonus: 1.0
+    wave_scale: 0.2
+    delta_scale: 0.6
+
+# =============================================================================
+# 训练配置
+# =============================================================================
+training:
+  algorithm: "MaskablePPO"      # 算法
+  total_timesteps: 1000000      # 总训练步数
+  
+  # PPO 超参数 (最大化GPU利用率)
+  ppo:
+    learning_rate: 0.0003
+    n_steps: 512                # 更小的采集批次，更频繁更新
+    batch_size: 512             # batch_size = n_steps，一次处理全部
+    n_epochs: 20                # 增加epoch，让GPU多训练几轮
+    gamma: 0.99
+    gae_lambda: 0.95
+    clip_range: 0.2
+    ent_coef: 0.01
+    
+  # 环境配置
+  env:
+    frame_skip: 60               # 4帧决策一次 (标准设置，避免决策过于频繁)
+    max_steps: 10000            # 最大步数
+    normalize_obs: true         # 归一化观测
