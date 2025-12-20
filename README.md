@@ -24,7 +24,7 @@
 ## 🎬 演示 (Demo)
 
 <div align="center">
-  <img src="https://i.postimg.cc/c48jFFRX/demo.gif" width="800" alt="AI Playing PVZ Demo" />
+  <img src="assets/demo.gif" width="800" alt="AI Playing PVZ Demo" />
   <p><i>AI 正在自动进行生存模式的策略规划与植物摆放</i></p>
 </div>
 
