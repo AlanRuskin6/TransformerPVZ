@@ -13,9 +13,11 @@
 **TransformerPVZ** 是一个前沿的强化学习项目，旨在利用 **Transformer (Attention Mechanism)** 和 **记忆增强网络** 自动攻克《植物大战僵尸》生存模式无尽）。
 
 > [!IMPORTANT]
-> **测试成果**：本项目已成功打通 **普通白天无尽模式**。你可以根据需要自行调整模型架构或训练方法。
+> **测试成果**：本项目已成功打通 **普通白天无尽模式**，达到了惊人的 **98.4% 胜率**！你可以根据需要自行调整模型架构或训练方法。
 
 [项目概览](#项目概览) • [核心创新](#核心创新) • [架构设计](#架构设计) • [快速开始](#快速开始) • [训练指南](#训练指南) • [项目结构](#项目结构)
+
+中文文档 | [English](README_EN.md)
 
 </div>
 
@@ -28,6 +30,20 @@
 ![AI Playing PVZ Demo](https://raw.githubusercontent.com/AlanRuskin6/TransformerPVZ/master/assets/demo.gif)
 
 *AI 正在自动进行生存模式的策略规划与植物摆放*
+
+</div>
+
+---
+
+## 🏆 基准测试成果 (Benchmark Achievement)
+
+<div align="center">
+
+![Benchmark Achievement](https://raw.githubusercontent.com/AlanRuskin6/TransformerPVZ/master/assets/benchmark.png)
+
+**我们的 AI 在白天无尽模式中达到了惊人的 98.4% 胜率！**
+
+这一里程碑证明了我们基于 Transformer 注意力机制和记忆增强学习方法在处理复杂长期策略游戏中的有效性。
 
 </div>
 
@@ -136,6 +152,9 @@ conda activate pvz_ai
 2. 将 `PlantsVsZombies.exe` 放入项目根目录的 `gameobj/` 文件夹。
 3. 运行 `gameobj/窗口化运行.reg` 确保游戏以窗口模式运行。
 
+> [!WARNING]
+> **重要提示**：游戏可执行文件 **必须** 放在 `gameobj/` 目录中。训练脚本会在该位置查找游戏文件。如果游戏文件不在正确位置，AI 训练将无法启动。
+
 ### 2. 配置详解
 
 项目的主要配置位于 `config/training_config.yaml`。
@@ -218,6 +237,7 @@ def _calculate_reward(self):
 
 - **崩溃风险**: 由于涉及内存读写与汇编注入，程序在运行过程中可能存在崩溃风险。建议用户根据需求进一步完善代码的健壮性（如增加异常捕获、自动重启机制等）。
 - **路径硬编码**: 目前部分路径可能存在硬编码，请在运行前仔细检查 `train.py` 及相关配置文件。
+- **游戏文件要求**: 确保将 `PlantsVsZombies.exe` (v1.0.0.1051) 放置在 `gameobj/` 目录中，否则训练无法启动。
 
 ---
 
@@ -256,6 +276,7 @@ def _calculate_reward(self):
 ├── engine/             # 动作执行引擎，处理植物种植与铲除
 ├── envs/               # Gymnasium 环境实现，包含奖励函数设计
 ├── game/               # 游戏对象状态建模 (Grid, Plant, Zombie, etc.)
+├── gameobj/            # 游戏可执行文件目录 (在此放置 PlantsVsZombies.exe)
 ├── hook/               # C++ Hook 源代码，实现高性能数据抓取
 ├── hook_client/        # Python 与 DLL 通信客户端 (Socket/Protocol)
 ├── memory/             # 内存读写、进程附加与汇编注入工具
@@ -337,6 +358,7 @@ AVAILABLE_PLANTS = [
 - [x] 基于 Transformer 的特征提取器。
 - [x] C++ 高性能 Hook 引擎。
 - [x] 基础生存模式训练。
+- [x] **白天无尽模式达到 98.4% 胜率**。
 - [ ] **课程学习 (Curriculum Learning)**: 从简单关卡逐步过渡到无尽模式。
 - [ ] **多智能体协作**: 模拟多个 AI 协同防守不同行。
 - [ ] **Web 监控面板**: 实时可视化 AI 的注意力热力图。
