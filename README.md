@@ -1,4 +1,4 @@
-# TransformerPVZ: 基于注意力机制的强化学习植物大战僵尸 AI
+# PPOforPVZ: 强化学习植物大战僵尸 AI
 
 <div align="center">
 
