@@ -74,6 +74,3 @@ python train.py
 python train.py --load models/latest_model.zip
 ```
 
-## License
-
-MIT
